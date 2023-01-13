@@ -1,7 +1,8 @@
 import './css/styles.css';
-import Notiflix from 'notiflix';
+import { Notify } from 'notiflix/build/notiflix-notify-aio';
 import debounce from 'lodash.debounce';
 import API from './fetchCountries';
+// import 'notiflix/dist/notiflix-3.2.6.min.css';
 
 const DEBOUNCE_DELAY = 300;
 
@@ -31,31 +32,34 @@ function onFormInput(evt) {
 function checkCountry(countryList) {
   length = countryList.length;
   clearContent();
+
   if (length === 1) {
     showOneCountry(countryList[0]);
-  } else if (length > 1 && length < 10) {
-    showCountries(countryList);
-  } else {
-    Notiflix.Notify.info(
-      'Too many matches found. Please enter a more specific name.'
-    );
+    return;
   }
+
+  if (length > 1 && length < 10) {
+    showCountries(countryList);
+    return;
+  }
+
+  Notify.info('Too many matches found. Please enter a more specific name.');
 }
 
 function showError(error) {
   clearContent();
-  if ((error.message = '404')) {
-    Notiflix.Notify.failure('Oops, there is no country with that name');
+  if (error.message === '404') {
+    Notify.failure('Oops, there is no country with that name');
   }
 }
 
 function showCountries(countryList) {
-  let markup = '';
-  countryList.forEach(country => {
-    // console.log(country);
-    markup += `<li><img src="${country.flags.svg}" width="16px" alt="flag of ${country.name.official}"> ${country.name.common}</li>`;
-  });
-  refs.countryList.innerHTML = markup;
+  refs.countryList.innerHTML = countryList
+    .map(
+      country =>
+        `<li><img src="${country.flags.svg}" width="16px" alt="flag of ${country.name.official}"> ${country.name.common}</li>`
+    )
+    .join('');
 }
 
 function showOneCountry(country) {
@@ -68,7 +72,7 @@ function showOneCountry(country) {
   } = country;
   const languagesList = Object.values(languages).join(', ');
 
-  refs.countryInfo.innerHTML = `<h0 class="title"><img src="${flags.svg}" width="24px" alt="flag of ${nameOfficial}"> ${nameCommon}</h0><p><span class='title-bold'>Capital:</span> ${capital}</p><p><span class='title-bold'>Population:</span> ${population}</p><p><span class='title-bold'>Languages:</span> ${languagesList}</p>`;
+  refs.countryInfo.innerHTML = `<h1 class="title"><img src="${flags.svg}" width="24px" alt="flag of ${nameOfficial}"> ${nameCommon}</h1><p><span class='title-bold'>Capital:</span> ${capital}</p><p><span class='title-bold'>Population:</span> ${population}</p><p><span class='title-bold'>Languages:</span> ${languagesList}</p>`;
 }
 
 function clearContent() {
