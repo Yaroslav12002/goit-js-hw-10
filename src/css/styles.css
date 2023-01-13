@@ -18,3 +18,17 @@ body {
   max-width: 320px;
   margin-bottom: 16px;
 }
+
+.country-list {
+  list-style: none;
+  padding-left: 0px;
+}
+
+.title {
+  font-size: 30px;
+  font-weight: 700;
+}
+
+.title-bold {
+  font-weight: 700;
+}
